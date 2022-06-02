@@ -1,74 +1,63 @@
+# exchange-orderbook-merge
 
-# orderly
-
-A Rust CLI WebSocket client for crypto exchanges. 
-Connects to the WebSocket feeds of multiple exchanges. 
-Subscribes to the live order book for the given currency pair.
-Publishes a merged order book as a gRPC stream.
-
-<img src="https://user-images.githubusercontent.com/1086619/170038125-8a4ed933-9cec-4a7a-9085-2dd806ca0307.gif" />
-
-Currently supports: 
-
-* Bitstamp WebSocket: `wss://ws.bitstamp.net`
-* Binance WebSocket: `wss://stream.binance.com:9443/ws`
-* Kraken WebSocket: `wss://ws.kraken.com`
-* Coinbase WebSocket: `wss://ws-feed.exchange.coinbase.com`
+This repo is to scratch exchange rate from popular Crypto exchanges and merge them to get summary.
+This project has server and client to adopt it into microservice.
+Inter-service communication is using gRPC with tonic server.
+Currently support Bitstamp, Binance, Kraken, Coinbase Exchanges.
 
 ```
 USAGE:
-    orderly-server [OPTIONS]
+    orderbook-server [OPTIONS]
 
 OPTIONS:
-    -h, --help               Print help information
-        --no-binance         (Optional) Don't show Binance in gRPC stream. Default: false
-        --no-bitstamp        (Optional) Don't show Bitstamp in gRPC stream. Default: false
-        --no-kraken          (Optional) Don't show Kraken in gRPC stream. Default: false
-        --no-coinbase        (Optional) Don't show Coinbase in gRPC stream. Default: false
-    -p, --port <PORT>        (Optional) Port number on which the the gRPC server will be hosted.
+    -h, --help               Print help
+        --no-binance         Ignore Binance in gRPC stream. Default: false
+        --no-bitstamp        Ignore Bitstamp in gRPC stream. Default: false
+        --no-kraken          Ignore Kraken in gRPC stream. Default: false
+        --no-coinbase        Ignore Coinbase in gRPC stream. Default: false
+    -p, --port <PORT>        Port number on which the the gRPC server will be hosted.
                              Default: 50051
-    -s, --symbol <SYMBOL>    (Optional) Currency pair to subscribe to. Default: ETH/BTC
+    -s, --symbol <SYMBOL>    Currency pair to subscribe to. Default: ETH/BTC
 ```
 
-Run gRPC server:
+Run orderbook server:
 
 ```
-cargo run --bin orderly-server
+cargo run --bin orderbook-server
 ```
 or with logs and options:
 ```
-env RUST_LOG=info cargo run --bin orderly-server -- --symbol ETH/BTC --port 50051
+env RUST_LOG=info cargo run --bin orderbook-server -- --symbol ETH/BTC --port 50051
 ```
 Exclude certain exchanges:
 
 ```
-cargo run --bin orderly-server -- --no-binance --no-bitstamp
+cargo run --bin orderbook-server -- --no-binance --no-bitstamp
 ```
 
 Client
 -----
 
-Connects to the gRPC server and streams the orderbook summary.
+Connects to the orderbook server and get the orderbook summary through stream.
 
-<img src="https://user-images.githubusercontent.com/1086619/169551698-3d59df5d-73db-47a3-a84d-cb0d2d0dd678.jpg" width="700"/>
 
 ```
 USAGE:
-    orderly-client [OPTIONS]
+    orderbook-client [OPTIONS]
 
 OPTIONS:
-    -h, --help           Print help information
-    -p, --port <PORT>    (Optional) Port number of the gRPC server. Default: 50051
+    -h, --help           Print help
+    -p, --port <PORT>    Port number of the orderbook server. Default: 50051
 ```
 
-Run gRPC client:
+Run orderbook client:
 
 ```
-cargo run --bin orderly-client
+cargo run --bin orderbook-client
 ```
 or with logs and options:
 
 ```
-env RUST_LOG=info cargo run --bin orderly-client -- --port 50051
+env RUST_LOG=info cargo run --bin orderbook-client -- --port 50051
 ```
 

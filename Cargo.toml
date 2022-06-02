@@ -25,11 +25,11 @@ tungstenite = "0.17.2"
 url = "2.2.2"
 
 [[bin]]
-name = "orderly-server"
+name = "orderbook-server"
 path = "src/main.rs"
 
 [[bin]]
-name = "orderly-client"
+name = "orderbook-client"
 path = "src/client.rs"
 
 [build-dependencies]
